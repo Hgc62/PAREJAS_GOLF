@@ -1,0 +1,50 @@
+<% let hoyos = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"]; %>
+
+
+
+<h1>DATOS PARTIDO</h1>
+
+    
+<div class="formulario">
+    <form method="post" action="/crear_partido">
+        <h3>Fecha</h3>
+        <input type="date" name="fecha"/>
+        <br>
+        <br>
+        <table id="tabla_monedas">
+            <thead>
+                <tr> 
+                    <th>JUGADOR</th>
+                    <% for (var i in hoyos) { %>
+                        <th><%= hoyos[i] %></th>
+                    <% } %>
+                </tr>
+            </thead>
+            <input type="hidden" name="num_jugadores" value="<%= jugadores.length%>"/>
+            <tbody>
+                <% for (var i in jugadores) { %>
+                    <tr>
+                        <th>
+                            <%= jugadores[i].jugador %>
+                            <input type="hidden" name="jugador<%=i%>" value="<%= jugadores[i].jugador %>"/>
+                        </th>
+                        <% for (var z in hoyos) { %>
+                            <th>
+                                <select name="jugador<%=i%><%=hoyos[z]%>">  
+                                    <option value="0" selected><%= 0 %></option>
+                                    <% for (let j = 1; j <= 9; j++) {%>
+                                        <option value="<%= j %>"><%= j %></option>
+                                        <% } %> 
+                                </select>
+                            </th>
+                        <% } %>
+                    </tr>
+                <% } %> 
+            </tbody>
+        </table> 
+        <br>
+        <p>Pulsa cuando estén los datos del partido:</p>
+        <input class="boton_enviar" type="submit" value="Enviar">
+        <input type="reset" value="borrar">     
+    </form>  
+</div>

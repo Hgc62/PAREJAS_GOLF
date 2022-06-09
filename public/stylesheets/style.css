@@ -1,0 +1,379 @@
+body {
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+    margin: 0;
+  }
+  
+#page {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 2px auto;
+  padding: 0px;
+}
+
+.main {
+  flex: 1 100%;
+  border: 1px solid #999;
+  padding: 2px;
+  margin: 1px;
+  background: #eee;
+}
+
+#mainHeader, #mainNav, #mainFooter {
+  text-align: center;
+}
+
+#mainHeader h1 {
+  margin: 8px;
+}
+
+#mainNav a {
+  margin: 0px 5px;
+}
+
+#mainSection {
+  padding: 20px;
+  text-align: left;
+}
+
+input[type=text], input[type=password], select {
+  background-color: white;
+  box-sizing: border-box;
+  border: 1px solid black;
+  height: 20px;
+  transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
+}
+
+
+input[type=text]:focus, input[type=password]:focus, select:focus, .caja_año:focus {
+  background-color: rgb(171, 240, 236);
+  height: 24px;
+}
+
+.caja_año {
+  background-color: white;
+  box-sizing: border-box;
+  width: 40px;
+  border: 1px solid black;
+  transition: ease-in-out, background-color .4s ease-in-out, height .4s ease-in-out;
+}
+
+a {
+  color: #00B7FF;
+}
+
+a.button_tabla {
+  display: inline-block;
+  /*font-size: x-small; */
+  font-size: small;
+  text-decoration: none;
+  padding: 1px 4px;
+  margin: 2px;
+  background: #f5f5f5;
+  color: black;
+  border-radius: 4px;
+  border: solid 1px lightgray;
+}
+
+a.button, .boton_enviar {
+  display: inline-block;
+  /*font-size: x-small; */
+  font-size: large;
+  text-decoration: none;
+  padding: 1px 4px;
+  margin: 2px;
+  background: #a3bcc5;
+  color: black;
+  border-radius: 4px;
+  border: solid 2px rgb(168, 155, 155);
+}
+
+.boton_datos {
+  text-decoration: none;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ffffff;
+  background-color: #1883ba;
+  border-radius: 6px;
+  border: 2px solid #0016b0;
+  margin-right: 5px;
+}
+
+a.button:hover,  a.button_tabla:hover, 
+.boton_enviar:hover, .boton_datos:hover {
+  background: rgb(138, 125, 125);
+}
+
+.right {
+  padding-right: 100px;
+  float: right;
+}
+
+#banderas, #monedas_conmemorativas {
+  display: flex;
+  flex-flow: row wrap;
+  margin: 2px auto;
+  padding: 5px;
+}
+
+#img_banderas {
+  width: 50px;
+  height: auto;
+}
+
+.bandera_pais, .conme {
+  margin: 2px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.bandera_unica {
+  
+  padding-left: 180px;
+}
+
+.monedas {
+  width: 120px;
+  height: 120px;
+}
+
+.nombre_pais, .año_conm {
+  margin-top: 3px;
+  text-align: center;
+}
+
+#series_monedas {
+  display: flex;
+  flex-flow: row;
+}
+
+.series {
+  display: flex;
+  flex-flow: column;
+  padding: 8px;
+}
+
+/* CSS para las tablas de presentación de consultas */
+#tabla_monedas,  #tabla_consultas{
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 2px solid rgb(2, 2, 2);
+  margin-right: 2px;
+}
+
+#tabla_monedas th, #tabla_monedas td {
+padding: 0.5em;
+border: 1px solid #333;
+text-align: center;
+font-size: 12px;
+font-weight:bold;
+width: 10px;
+}
+
+#tabla_consultas th, #tabla_consultas td {
+  padding: 0.5em;
+  border: 1px solid #333;
+  text-align: center;
+  font-size: 15px;
+  font-weight:bold;
+  width: 50px;
+}
+  
+tbody tr:nth-child(odd) {
+  background-color: #eea1a19a;
+}
+  
+tbody tr:nth-child(even) {
+  background-color: #c9ca90;
+}   
+/* ------------------------- */
+
+#usersIndex {
+  border: 2px solid rgb(2, 2, 2);
+  border-collapse: collapse;
+  margin-right: 5px;
+}
+
+#usersIndex tr {
+  background-color: #e5e5e5;
+  border: 1px dotted #636363;
+  border-radius: 5px;
+}
+
+#usersIndex tr:nth-child(even) {
+  background-color: #cfcfcf
+}
+
+#usersIndex td, #usersIndex th {
+  border: 1px solid #333;
+  padding: 3px;
+  margin: 2px;
+}
+
+#usersIndex th {
+  background-color: #9c9c9c;
+  text-align: center;
+}
+
+#usersIndex tr td:nth-child(1) {
+  text-align: left;
+  width: 120px;
+  padding-left: 15px;
+}
+
+#usersIndex tr td:nth-child(2) {
+  text-align: center;
+  width: 120px;
+}
+
+#usersIndex tr td:nth-child(3) {
+  text-align: center;
+  width: 80px;
+}
+
+#usersIndex tr td:nth-child(4) {
+  text-align: center;
+  width: 100px;
+}
+
+a.enlace {
+  font-weight:bold;
+  color: #2c2fe6;;
+}
+
+a.enlace:hover {
+  border-bottom: 1px solid;
+  background: #2c2fe6;
+  color: white;
+}
+
+/* CSS para los mensajes flash */
+#flashinfo {
+  width: auto;
+  border: 2px solid blue;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+#flashinfo h3 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  margin-bottom: 0px;
+  background-color: #00c;
+  color: #ffffff;
+}
+
+#flashinfo ul li {
+  margin: 5px 5px 5px 0px;
+  font-size: 12px;
+  list-style: square;
+}
+
+#flashsuccess {
+  width: auto;
+  border: 2px solid green;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+#flashsuccess h3 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  margin-bottom: 0px;
+  background-color: #0c0;
+}
+
+#flashsuccess ul li {
+  margin: 5px 5px 5px 0px;
+  font-size: 12px;
+  list-style: square;
+}
+
+#flasherror {
+  width: auto;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+#flasherror h3 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  margin-bottom: 0px;
+  background-color: #c00;
+}
+
+#flasherror ul li {
+  margin: 5px 5px 5px 0px;
+  font-size: 12px;
+  list-style: square;
+}
+
+/* CSS para la paginación de respuestas largas */
+.pagination {
+  padding-left: 0;
+  margin: 15px 0px 0px 0px;
+  border-radius: 4px;
+}
+
+.pagination > li {
+  display: inline;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  position: relative;
+  float: left;
+  padding: 3px 7px;
+  margin-left: -1px;
+  line-height: 1.42857143;
+  color: #00B7FF;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+  z-index: 2;
+  color: #fff;
+  cursor: default;
+  background-color: #00B7FF;
+  border-color: #03a9f4;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+  margin-left: 0;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+

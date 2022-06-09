@@ -1,0 +1,46 @@
+<h1>
+    RESULTADOS PARTIDO "<%= ult_partido[0].partido %>"
+    <br>
+    FECHA: <%= fecha_esp %>
+</h1>
+
+<table id="usersIndex">
+    <thead>
+        <tr>
+            <th>JUGADOR</th>
+            <th>STB</th>
+            <th>HCP</th>
+            <th>HCP-N</th>
+            <th>G1</th>
+            <th>G2</th>
+            <th>G3</th>
+            <th>G4</th>
+            <th>G5</th>
+            <th>G6</th>
+            <th>G7</th>
+            <th>G8</th>
+            <th>G9</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var i in ult_partido) { %>
+            <tr>
+                <td><%= ult_partido[i].golfista.jugador %></td>
+                <td><%= ult_partido[i].stableford %></td>
+                <td><%= ult_partido[i].handicap %></td> 
+                <td><%= ult_partido[i].handicap_nuevo %></td>
+                <td><%= ult_partido[i].g1 %></td>
+                <td><%= ult_partido[i].g2 %></td>
+                <td><%= ult_partido[i].g3 %></td>
+                <td><%= ult_partido[i].g4 %></td>
+                <td><%= ult_partido[i].g5 %></td>
+                <td><%= ult_partido[i].g6 %></td>
+                <td><%= ult_partido[i].g7 %></td>
+                <td><%= ult_partido[i].g8 %></td>
+                <td><%= ult_partido[i].g9 %></td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+<br>
+

@@ -1,0 +1,33 @@
+body {
+    background: #999;
+}
+
+#page:after {
+    color: white;
+    content: "Pantalla de ordenador";
+}
+
+#mainNav {
+    flex: 0 auto;
+}
+
+#mainNav a {
+    display: block;
+    text-align: left;
+}
+
+#mainSection {
+    flex: 1;
+    overflow: auto;
+}
+
+#series_monedas {
+    display: flex;
+    flex-flow: column;
+  }
+  
+.series {
+    display: flex;
+    flex-flow: row;
+    padding: 8px;
+  }

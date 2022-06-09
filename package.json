@@ -1,0 +1,29 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "super": "supervisor ./bin/www",
+    "migrate": "sequelize db:migrate --url sqlite://$(pwd)/torneo_golf.sqlite",
+    "seed": "sequelize db:seed:all --url sqlite://$(pwd)/torneo_golf.sqlite",
+    "migrate_win": "sequelize db:migrate --url sqlite://%cd%/torneo_golf.sqlite",
+    "seed_win": "sequelize db:seed:all --url sqlite://%cd%/torneo_golf.sqlite"
+  },
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "cookieconsent": "^3.1.1",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "express-flash": "0.0.2",
+    "express-partials": "^0.3.0",
+    "express-session": "^1.17.3",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "sequelize": "^6.20.1",
+    "sequelize-cli": "^6.4.1",
+    "sqlite3": "^5.0.8",
+    "supervisor": "^0.12.0"
+  }
+}

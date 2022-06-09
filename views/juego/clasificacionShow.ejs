@@ -1,0 +1,23 @@
+<h1>
+    Clasificación
+</h1>
+
+<table id="usersIndex">
+    <thead>
+        <tr>
+            <th>JUGADOR</th>
+            <th>PUNTUACIÓN</th>
+            <th>HANDICAP</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var i in jugadores) { %>
+            <tr>
+                <td><%= jugadores[i].jugador %></td>
+                <td><%= jugadores[i].puntuacion %></td>
+                <td><%= jugadores[i].handicap %></td>  
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+<br>
