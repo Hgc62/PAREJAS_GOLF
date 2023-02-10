@@ -14,6 +14,7 @@ let hoyos = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"];
 let HCP_GP = [9,7,4,2,1,3,6,5,8];
 let PENALIZACION_GANAR = 1;
 let AYUDA_PERDER = 1;
+let PENALIZACION_NO_JUGAR = 1;
 
 function convertDateFormat(string) {
     var info = string.split('-').reverse().join('/');
@@ -99,11 +100,11 @@ function calcular_nuevos_valores (partido, jugadores) {
         }
     }
 
-    //Analizo por abajo para ver los que tienen STB 0 que es que no han jugado y asignarles STB como el menor
+    //Analizo por abajo para ver los que tienen STB 0 que es que no han jugado y asignarles STB como el menor menos 1
     //y los que tengan el STB mínimo sumarles 1 al HCP
     for (let index = num_jugadores-1; index >= 0; index--) {
         if (resultado[index].STB === 0 && resultado[index].STB !== MAX_STB) {
-            partido[`${resultado[index].nombre}STBTOTAL`] = MIN_STB;
+            partido[`${resultado[index].nombre}STBTOTAL`] = MIN_STB - PENALIZACION_NO_JUGAR;
             partido[`${resultado[index].nombre}HCPN`] = partido[`${resultado[index].nombre}HCP`];
 
         } else if (resultado[index].STB === MIN_STB) {
@@ -281,7 +282,8 @@ exports.consulta_partidos  = async (req, res, next) => {
         let options = {
             where: {},
             order: [
-                ['partido', 'DESC']
+                ['partido', 'DESC'],
+                ['stableford', 'DESC']
               ],
             include: []
         };
