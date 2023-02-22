@@ -31,7 +31,12 @@ function calcular_STB (partido, jugadores) {
             if (HCP_GP[j] > HCPP) {
                  PAR_HOYO = 3;
             } else {
-                 PAR_HOYO = 4;
+                 //PAR_HOYO = 4;
+                 PAR_HOYO = 3 + Math.floor(HCPP/9);
+                 if (HCP_GP[j] <= HCPP % 9) {
+                    PAR_HOYO += 1;
+                 }
+
             }
              var golpes_hoyo = partido[`${jugadores[i].jugador}GOLPES`][j];
              var STB =0;
@@ -108,7 +113,8 @@ function calcular_nuevos_valores (partido, jugadores) {
             partido[`${resultado[index].nombre}HCPN`] = partido[`${resultado[index].nombre}HCP`];
 
         } else if (resultado[index].STB === MIN_STB) {
-            partido[`${resultado[index].nombre}HCPN`] = partido[`${resultado[index].nombre}HCP`] < 9 ? partido[`${resultado[index].nombre}HCP`] + AYUDA_PERDER : 9;   
+            // partido[`${resultado[index].nombre}HCPN`] = partido[`${resultado[index].nombre}HCP`] < 9 ? partido[`${resultado[index].nombre}HCP`] + AYUDA_PERDER : 9;
+            partido[`${resultado[index].nombre}HCPN`] = partido[`${resultado[index].nombre}HCP`] + AYUDA_PERDER;   
         }   
     }
 }
