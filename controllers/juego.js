@@ -15,6 +15,8 @@ let HCP_GP = [9,7,4,2,1,3,6,5,8];
 let PENALIZACION_GANAR = 1;
 let AYUDA_PERDER = 1;
 let PENALIZACION_NO_JUGAR = 1;
+let MIN_PARTIDOS = 9; //Mínimo numero de partidos para sacar la clasificaciòn quitando los tres peores resultados.
+let PARTIDOS_BORRADOS = 3; //Número de los peores resultados que se  eliminan para la clasificacion final
 
 function convertDateFormat(string) {
     var info = string.split('-').reverse().join('/');
@@ -124,7 +126,63 @@ function calcular_nuevos_valores (partido, jugadores) {
 exports.clasificacionShow =async (req, res, next) => {
     try {
         const jugadores = await models.Jugador.findAll({ order: [["puntuacion", "DESC"]]});
-        res.render('juego/clasificacionShow', {jugadores});
+        // Sacar de la BBDD el partido de mayor número
+        var NUM_PARTIDO = await models.Resultado.max('partido');
+
+        let resultado_final = [];
+        if (NUM_PARTIDO >= MIN_PARTIDOS) {
+        //Si el número de partidos es mayor que 9 (variable) sacar de la BBDD Arrays con los STB de cada jugador
+        // por partido y llamar a una función que quite los tres peores y dé la suma del resto
+            
+            let options = {
+                attributes: ['golfistaId','stableford'],
+                where: {},
+                order: [
+                    ['stableford', 'DESC']
+                ],
+                include: []
+            };
+
+            options.include.push({
+                model: models.Jugador,
+                as: "golfista"
+            }); 
+
+            const resultados_total = await models.Resultado.findAll(options);
+            //Creo un objeto con el nombre del jugador y un array con los resultados STB en orden decreciente
+            let lista_STB ={};
+            for (var i in resultados_total) {
+                if (!lista_STB[`${resultados_total[i].golfista.jugador}`]) {
+                    lista_STB[`${resultados_total[i].golfista.jugador}`]= [];   
+                } 
+                const LONG_STB = lista_STB[`${resultados_total[i].golfista.jugador}`].push(resultados_total[i].stableford);
+            } 
+            // Elimino los resultados peores. El número de eliminados viene indicado en la variable PARTIDOS_BORRADOS
+            for (var j in lista_STB) {
+                const BORRADOS = lista_STB[j].splice((lista_STB[j].length) - PARTIDOS_BORRADOS);
+                //Añado la suma total de los puntos STB traas quitar los peores resultados
+                let suma_stb = 0;
+                for (var stb in lista_STB[j]) {
+                    suma_stb += lista_STB[j][stb]; 
+                    lista_STB[j].TOTAL = suma_stb;
+                }
+            }
+            //Creo una tabla con nombre y resutado ordenado de mayor a menor.
+            let ind = 0;
+            for (var nom in lista_STB) {
+
+                resultado_final[ind] = {nombre: nom, STB_TOTAL: lista_STB[nom].TOTAL};
+                ind++;
+            }
+            resultado_final.sort((a, b) => {
+                return b.STB_TOTAL - a.STB_TOTAL;
+            });
+
+        } 
+            
+        res.render('juego/clasificacionShow', {jugadores, resultado_final});
+       
+
     } catch (error) {
         next(error);
     }    

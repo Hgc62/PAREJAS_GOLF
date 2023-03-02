@@ -1,5 +1,29 @@
+<% if (resultado_final) { %>
+    <h1>
+        CLASIFICACIÓN FINAL
+    </h1>
+    
+    <table id="usersIndex">
+        <thead>
+            <tr>
+                <th>JUGADOR</th>
+                <th>PUNTUACIÓN</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for (var i in jugadores) { %>
+                <tr>
+                    <td><%= resultado_final[i].nombre %></td>
+                    <td><%= resultado_final[i].STB_TOTAL %></td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <br>
+<% } %>
+
 <h1>
-    Clasificación
+    CLASIFICACIÓN
 </h1>
 
 <table id="usersIndex">
