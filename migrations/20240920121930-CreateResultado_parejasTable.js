@@ -2,7 +2,7 @@
 
 module.exports = {
   up (queryInterface, Sequelize) {
-    return queryInterface.createTable('Resultado',
+    return queryInterface.createTable('Resultado_pareja',
     {
         id: {
             type: Sequelize.INTEGER,
@@ -25,21 +25,18 @@ module.exports = {
             isDate: true,
           }
         },
-        golfistaId: {
+        campo:{
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        pareja_golfistaId: {
           type: Sequelize.INTEGER,
           references: {
-            model: "Jugador",
+            model: "Pareja",
             key: "id"
           },
           OnUpdate: 'CASCADE',
           OnDelete: 'CASCADE'
-        },
-        handicap: {
-          type: Sequelize.INTEGER, 
-          allowNull: false,
-          validate: {
-            isInt: true,
-          }
         },
         g1: {
           type: Sequelize.INTEGER, 
@@ -104,14 +101,7 @@ module.exports = {
             isInt: true,
           }
         },
-        stableford: {
-          type: Sequelize.INTEGER, 
-          allowNull: false,
-          validate: {
-            isInt: true,
-          }
-        },
-        handicap_nuevo: {
+        puntuacion: {
           type: Sequelize.INTEGER, 
           allowNull: false,
           validate: {
@@ -134,6 +124,6 @@ module.exports = {
   },
 
   down (queryInterface, Sequelize) {
-    return queryInterface.dropTable('Resultado');
+    return queryInterface.dropTable('Resultado_pareja');
   }
 };

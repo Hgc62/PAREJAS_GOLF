@@ -10,7 +10,16 @@
         <h3>Fecha</h3>
         <input type="date" name="fecha"/>
         <br>
+        <h3>Selecciona el campo:</h3>
+        <select name="campo"> 
+            <option value=""></option> 
+            <% for (var i in CAMPOS) { %>
+                <% var campo = CAMPOS[i]; %>
+                <option value="<%= campo %>"><%= campo %></option>
+            <% } %> 
+        </select>
         <br>
+        <h3>Resultados del partido:</h3>
         <table id="tabla_monedas">
             <thead>
                 <tr> 
@@ -31,7 +40,7 @@
                         <% for (var z in hoyos) { %>
                             <th>
                                 <select name="jugador<%=i%><%=hoyos[z]%>">  
-                                    <option value="0" selected><%= 0 %></option>
+                                    <option value="9" selected><%= 9 %></option>
                                     <% for (let j = 1; j <= 9; j++) {%>
                                         <option value="<%= j %>"><%= j %></option>
                                         <% } %> 

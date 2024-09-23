@@ -8,10 +8,14 @@ const fs = require("fs");
 const req = require("express/lib/request");
 const res = require("express/lib/response");
 const { where } = require("sequelize");
+const { count } = require("console");
 
-
+let CAMPOS = ["GOLF PARK", "COLMENAR", "EL OLIVAR", "NEGRALEJO"];
 let hoyos = ["G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9"];
-let HCP_GP = [9,7,4,2,1,3,6,5,8];
+let HCP_GP = [9,7,4,2,1,3,6,5,8]; // HCP de los hoyos de Golf Park
+let HCP_COLMENAR = [8,2,4,6,7,3,5,9,1]; // HCP de los hoyos de Colmenar
+let HCP_OLIVAR = [8,2,4,6,7,3,5,9,1]; // HCP de los hoyos del Olivar
+let HCP_NEGRALEJO = [8,3,4,7,6,9,1,5,2]; // HCP de los hoyos de Negralejo corto
 let PENALIZACION_GANAR = 1;
 let AYUDA_PERDER = 1;
 let PENALIZACION_NO_JUGAR = 1;
@@ -23,6 +27,62 @@ function convertDateFormat(string) {
     return info;
 }
 
+function calcular_golpes_HCP (partido, jugadores) {
+    // Por ahora no calculamos golpe por HCP del jugador y del campo,por lo tanto copio los golpes al GOLPES_HCP
+    for (var i in jugadores) {
+        for (var j in hoyos){
+            partido[`${jugadores[i].jugador}GOLPES_HCP`][j] = partido[`${jugadores[i].jugador}GOLPES`][j];
+        }
+    }
+}
+
+function calcular_mejores_golpes_pareja (partido, parejas){
+    for (var i in parejas) {
+        if (parejas[i].nombre === "Isi-JJ") {
+            for (var z in hoyos){
+                partido[`${parejas[i].nombre}GOLPES`][z] = Math.min (partido[`IsiGOLPES`][z], partido[`JJGOLPES`][z]); 
+            }
+ 
+        } else if (parejas[i].nombre === "MA-Celes") {
+            for (var z in hoyos){
+                partido[`${parejas[i].nombre}GOLPES`][z] = Math.min (partido[`MAGOLPES`][z], partido[`CelesGOLPES`][z]); 
+            }
+ 
+        } else {
+            for (var z in hoyos){
+                partido[`${parejas[i].nombre}GOLPES`][z] = Math.min (partido[`AgusGOLPES`][z], partido[`HonoGOLPES`][z]); 
+            }
+ 
+        }
+    }
+}
+
+function calcular_resultado_hoyos (partido, parejas){
+    // Creo en partido la variable para anotar los hoyos ganados
+    for (var i in parejas) {
+        partido[`${parejas[i].nombre}HOYOS_GAN`] = 0;
+    }
+    //Crear objeto resultado con nombre de pareja y GOLPES y ordenarlo de menor a mayor
+    let resultado = [];
+    // Vamos cargando cada hoyo y analizando quien lo gana
+    for (var j in hoyos){
+        for (var i in parejas) {
+            resultado[i] = {nombre: parejas[i].nombre, GOLPES_H: partido[`${parejas[i].nombre}GOLPES`][j]};
+        }
+        //Ordenamos de menor a mayor
+        resultado.sort((a, b) => {
+            return a.GOLPES_H - b.GOLPES_H;
+        });
+        // Analizar si el menor es único. Si hay empate la puntuación es cero para todos.
+        if (resultado[0].GOLPES_H  < resultado[1].GOLPES_H) {
+            // Gana el hoyo la pareja de resultado[0]
+            partido[`${resultado[0].nombre}HOYOS_GAN`]+=1;
+        }
+        resultado = [];
+    }
+}
+
+/*
 function calcular_STB (partido, jugadores) {
     for (var i in jugadores) {
         //HCP personal
@@ -120,9 +180,10 @@ function calcular_nuevos_valores (partido, jugadores) {
         }   
     }
 }
-
+*/
 
 // GET clasificacion
+/*
 exports.clasificacionShow =async (req, res, next) => {
     try {
         const jugadores = await models.Jugador.findAll({ order: [["puntuacion", "DESC"]]});
@@ -179,7 +240,7 @@ exports.clasificacionShow =async (req, res, next) => {
             });
 
         } 
-            
+          
         res.render('juego/clasificacionShow', {jugadores, resultado_final});
        
 
@@ -187,13 +248,28 @@ exports.clasificacionShow =async (req, res, next) => {
         next(error);
     }    
 };
+*/
+exports.clasificacionShow =async (req, res, next) => {
+    try {
+        const parejas = await models.Pareja.findAll({ order: [["puntuacion", "DESC"]]});
+        //const num_partidos = count(parejas);
+        // Sacar de la BBDD el partido de mayor número
+          
+        res.render('juego/clasificacionShow', {parejas});
+       
+
+    } catch (error) {
+        next(error);
+    }    
+};
+
 
 // GET nuevo_partido
 exports.formulario = async (req, res, next) => {
     try {  
         const jugadores = await models.Jugador.findAll({attributes:['jugador']});
         req.flash('info', 'Introduzca los datos para la creación del partido. El campo fecha es obligatorio, si no lo pone perderá el resto de datos');
-        res.render('juego/formulario', {jugadores});
+        res.render('juego/formulario', {jugadores, CAMPOS});
     } catch (error) {
         next(error);
     }
@@ -206,22 +282,44 @@ exports.crear_partido = async (req, res, next) => {
 
     //Creo el objeto donde guardaré todos los datos del partido.
     let partido ={};
+    // Anoto la fecha del partido
     partido.fecha = req.body.fecha;
-    // Si no hay fecha para el partido se da error.
-    if (partido.fecha) {
+    // Anoto el campo del partido
+    partido.campo =req.body.campo;
+    // Si no hay fecha y campo para el partido se da error.
+    if (partido.fecha && partido.campo) {
         //Cargo en partido para cada jugador los golpes por hoyo puestos en el formulario
         for (let i = 0; i < num_jugadores; i++) {
             partido[`${req.body["jugador"+i]+"GOLPES"}`] = [0,0,0,0,0,0,0,0,0];
             // Creo en partido el array donde pondré los puntos stableford obtenidos en cada hoyo
-            partido[`${req.body["jugador"+i]+"STB"}`] = [0,0,0,0,0,0,0,0,0];
+            //partido[`${req.body["jugador"+i]+"STB"}`] = [0,0,0,0,0,0,0,0,0];
+            // Creo en partido el array donde pondré los golpes aplicado el HCP obtenidos en cada hoyo
+            partido[`${req.body["jugador"+i]+"GOLPES_HCP"}`] = [0,0,0,0,0,0,0,0,0];
             for (var z in hoyos) {
                 partido[`${req.body["jugador"+i]+"GOLPES"}`][z] = req.body["jugador"+i+`${hoyos[z]}`];
             } 
         }
 
         try {
-            //Obtengo el HCP actual de la BBDD y lo pongo en partido.
             const jugadores = await models.Jugador.findAll();
+            //Calcular para cada uno los golpes en función del HCP y ponerlo en partido en GOLPES_HCP
+            calcular_golpes_HCP (partido, jugadores);
+
+            // Obtenemos de la base de datos las parejas
+            const parejas = await models.Pareja.findAll();
+
+            // Creo los arrays para los resultados de las parejas
+            for (var i in parejas) {
+                partido[`${parejas[i].nombre}GOLPES`] = [0,0,0,0,0,0,0,0,0];
+            }
+
+            //Calcular mejores golpes por pareja y ponerlo en partido en el array creado
+            calcular_mejores_golpes_pareja (partido, parejas);
+
+            //Calcular que pareja gana cada hoyo y se le da 1 punto por hoyo. Si hay empate en los primeros 0 puntos a todos
+            calcular_resultado_hoyos (partido, parejas);
+
+            /*
             for (var i in jugadores) {
                 partido[`${jugadores[i].jugador}HCP`] = jugadores[i].handicap;
             } 
@@ -230,26 +328,33 @@ exports.crear_partido = async (req, res, next) => {
             //Ordeno por STB, calculo nuevos HCP y STB de los no presentados
             calcular_nuevos_valores (partido, jugadores);
 
-            //Actualizo la tabla de jugadores con puntuación total y nuevo HCP
-            for (var i in jugadores) {
-                const jugador = await models.Jugador.findOne({ where: { jugador: `${jugadores[i].jugador}` }});
-                jugador.handicap = partido[`${jugadores[i].jugador}HCPN`];
-                jugador.puntuacion += partido[`${jugadores[i].jugador}STBTOTAL`];
-                await jugador.save({fields: ["handicap", "puntuacion"]});
+            //Actualizo la tabla de parejas con puntuación total
+            */
+            for (var i in parejas) {
+                const pareja = await models.Pareja.findOne({ where: { nombre: `${parejas[i].nombre}` }});
+                //jugador.handicap = partido[`${jugadores[i].jugador}HCPN`];
+                pareja.puntuacion += partido[`${parejas[i].nombre}HOYOS_GAN`];
+                await pareja.save({fields: ["puntuacion"]});
             } 
 
             //Añado a la tabla de resultados el partido actual
             var NUM_PARTIDO = await models.Resultado.max('partido');
             NUM_PARTIDO = NUM_PARTIDO ? NUM_PARTIDO+1 : 1;
+            const CAMPO = partido.campo;
             const FECHA = partido.fecha;
             //Convertir a formato dd/mm/aaaa
             var fecha_esp = convertDateFormat(FECHA);
             for (var i in jugadores) {
                 const JUGADOR = jugadores[i].jugador;
                 const ID_JUGADOR = jugadores[i].id;
-                const HANDICAP = partido[`${JUGADOR}HCP`];
-                const HANDICAP_N = partido[`${JUGADOR}HCPN`];
-                const TOTAL_STB = partido[`${JUGADOR}STBTOTAL`];
+                //Los tres siguientes campos no pueden estar vacíos en la BBDD. No son necesarios y los pongo a 1.
+               // const HANDICAP = partido[`${JUGADOR}HCP`];
+               // const HANDICAP_N = partido[`${JUGADOR}HCPN`];
+               // const TOTAL_STB = partido[`${JUGADOR}STBTOTAL`];
+                const HANDICAP = 1;
+                const HANDICAP_N =1;
+                const TOTAL_STB = 1;
+
                 for (var g in hoyos) {
                     switch (hoyos[g]) {
                         case "G1":
@@ -284,6 +389,7 @@ exports.crear_partido = async (req, res, next) => {
                 await models.Resultado.create({
                     partido: NUM_PARTIDO,
                     fecha: FECHA,
+                    campo: CAMPO,
                     golfistaId: ID_JUGADOR,
                     handicap: HANDICAP,
                     stableford: TOTAL_STB,
@@ -299,14 +405,75 @@ exports.crear_partido = async (req, res, next) => {
                     g9: GOLPES9
                 });
             } 
+
+            //Añado a la tabla de resultado_pareja el partido actual
+            var NUM_PARTIDO_PAR = await models.Resultado_pareja.max('partido');
+            NUM_PARTIDO_PAR = NUM_PARTIDO_PAR ? NUM_PARTIDO_PAR+1 : 1;
+            const CAMPO_PAR = partido.campo;
+            const FECHA_PAR = partido.fecha;
+            //Convertir a formato dd/mm/aaaa
+            var fecha_esp = convertDateFormat(FECHA_PAR);
+            for (var i in parejas) {
+                const PAREJA = parejas[i].nombre;
+                const ID_PAREJA = parejas[i].id;
+                const PUNTUACION = partido[`${PAREJA}HOYOS_GAN`];
+                for (var g in hoyos) {
+                    switch (hoyos[g]) {
+                        case "G1":
+                            var GOLPES1 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G2":
+                            var GOLPES2 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G3":
+                            var GOLPES3 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G4":
+                            var GOLPES4 = partido[`${PAREJA}GOLPES`][g];
+                            break;    
+                        case "G5":
+                            var GOLPES5 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G6":
+                            var GOLPES6 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G7":
+                            var GOLPES7 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                        case "G8":
+                            var GOLPES8 = partido[`${PAREJA}GOLPES`][g];
+                            break;    
+                        case "G9":
+                            var GOLPES9 = partido[`${PAREJA}GOLPES`][g];
+                            break;
+                    }
+                }
+                await models.Resultado_pareja.create({
+                    partido: NUM_PARTIDO_PAR,
+                    fecha: FECHA_PAR,
+                    campo: CAMPO_PAR,
+                    pareja_golfistaId: ID_PAREJA,
+                    g1: GOLPES1,
+                    g2: GOLPES2,
+                    g3: GOLPES3,
+                    g4: GOLPES4,
+                    g5: GOLPES5,
+                    g6: GOLPES6,
+                    g7: GOLPES7,
+                    g8: GOLPES8,
+                    g9: GOLPES9,
+                    puntuacion: PUNTUACION
+                });
+            } 
+
             req.flash('success', 'Partido creado correctamente.');
 
             //Leo la BBDD para mostrar el resultado con el ejs, de esta forma puedo pasar el nombre del jugador
             let options = {
                 where: {},
-                order: [
-                    ['stableford', 'DESC']
-                  ],
+                //order: [
+                //    ['stableford', 'DESC']
+                //  ],
                 include: []
             };
 
@@ -319,7 +486,24 @@ exports.crear_partido = async (req, res, next) => {
 
             const ult_partido = await models.Resultado.findAll(options);
 
-            res.render('juego/resultados_partido', {ult_partido, fecha_esp});
+            let options1 = {
+                where: {},
+                order: [
+                  ['puntuacion', 'DESC']
+                ],
+                include: []
+            };
+
+            options1.where.partido = NUM_PARTIDO;
+            
+            options1.include.push({
+                model: models.Pareja,
+                as: "pareja_golfista"
+            }); 
+
+            const ult_partido_par = await models.Resultado_pareja.findAll(options1);
+
+            res.render('juego/resultados_partido', {ult_partido, ult_partido_par, fecha_esp});
         } catch (error) {
             if (error instanceof Sequelize.ValidationError) {
                 req.flash('error', 'Hay errores de validación enla base de datos.');
@@ -343,11 +527,12 @@ exports.consulta_partidos  = async (req, res, next) => {
         //const jugadores = await models.Jugador.findAll({ order: ["id"]});
 
         //Leo la BBDD para mostrar el resultado con el ejs, de esta forma puedo pasar el nombre del jugador
+        /*
         let options = {
             where: {},
             order: [
                 ['partido', 'DESC'],
-                ['stableford', 'DESC']
+               // ['stableford', 'DESC']
               ],
             include: []
         };
@@ -356,24 +541,43 @@ exports.consulta_partidos  = async (req, res, next) => {
             model: models.Jugador,
             as: "golfista"
         }); 
+        */
+
+        let options1 = {
+            where: {},
+            order: [
+              ['partido', 'DESC'],
+              ['puntuacion', 'DESC']
+            ],
+            include: []
+        };
+        
+        options1.include.push({
+            model: models.Pareja,
+            as: "pareja_golfista"
+        }); 
+
 
         //Paginación
-        const count =await models.Resultado.count(options);
+        const count =await models.Resultado_pareja.count(options1);
         
         if (count === 0) {
             req.flash("info", "No hay ningún resultado para la consulta.");
         }
-        
-        const items_per_page = 6;
+        // Para presentar partidas individuales
+        //const items_per_page = 6;
+        // Para presentar partidas por parejas
+        const items_per_page = 3;
         const pageno = parseInt(req.query.pageno) || 1;
         res.locals.paginate_control = paginate(count, items_per_page, pageno, req.url);
 
-        options.offset = items_per_page * (pageno - 1);
-        options.limit = items_per_page;
+        options1.offset = items_per_page * (pageno - 1);
+        options1.limit = items_per_page;
 
-        const partidos = await models.Resultado.findAll(options);
-
-        res.render('juego/partidosShow', {partidos});
+        //const partidos = await models.Resultado.findAll(options);
+        const partidos_par = await models.Resultado_pareja.findAll(options1);
+        
+        res.render('juego/partidosShow', {partidos_par});
     } catch (error) {
         next(error);
     }    

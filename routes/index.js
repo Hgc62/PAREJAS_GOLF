@@ -20,3 +20,4 @@ router.post('/crear_partido',         juegoController.crear_partido);
 router.get('/consulta_partidos',      juegoController.consulta_partidos);
 
 module.exports = router;
+

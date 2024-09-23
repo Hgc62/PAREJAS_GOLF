@@ -1,5 +1,5 @@
 <h1>
-    RESULTADOS PARTIDO "<%= ult_partido[0].partido %>"
+    RESULTADOS PARTIDO "<%= ult_partido[0].partido %>", CAMPO "<%= ult_partido[0].campo %>"
     <br>
     FECHA: <%= fecha_esp %>
 </h1>
@@ -8,9 +8,6 @@
     <thead>
         <tr>
             <th>JUGADOR</th>
-            <th>STB</th>
-            <th>HCP</th>
-            <th>HCP-N</th>
             <th>G1</th>
             <th>G2</th>
             <th>G3</th>
@@ -26,9 +23,6 @@
         <% for (var i in ult_partido) { %>
             <tr>
                 <td><%= ult_partido[i].golfista.jugador %></td>
-                <td><%= ult_partido[i].stableford %></td>
-                <td><%= ult_partido[i].handicap %></td> 
-                <td><%= ult_partido[i].handicap_nuevo %></td>
                 <td><%= ult_partido[i].g1 %></td>
                 <td><%= ult_partido[i].g2 %></td>
                 <td><%= ult_partido[i].g3 %></td>
@@ -43,4 +37,37 @@
     </tbody>
 </table>
 <br>
-
+<table id="usersIndex">
+    <thead>
+        <tr>
+            <th>PAREJA</th>
+            <th>PUNTUACIÓN</th>
+            <th>G1</th>
+            <th>G2</th>
+            <th>G3</th>
+            <th>G4</th>
+            <th>G5</th>
+            <th>G6</th>
+            <th>G7</th>
+            <th>G8</th>
+            <th>G9</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var i in ult_partido_par) { %>
+            <tr>
+                <td><%= ult_partido_par[i].pareja_golfista.nombre %></td>
+                <td><%= ult_partido_par[i].puntuacion %></td>
+                <td><%= ult_partido_par[i].g1 %></td>
+                <td><%= ult_partido_par[i].g2 %></td>
+                <td><%= ult_partido_par[i].g3 %></td>
+                <td><%= ult_partido_par[i].g4 %></td>
+                <td><%= ult_partido_par[i].g5 %></td>
+                <td><%= ult_partido_par[i].g6 %></td>
+                <td><%= ult_partido_par[i].g7 %></td>
+                <td><%= ult_partido_par[i].g8 %></td>
+                <td><%= ult_partido_par[i].g9 %></td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>

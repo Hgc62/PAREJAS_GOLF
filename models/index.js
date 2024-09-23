@@ -14,6 +14,12 @@ const url = process.env.DATABASE_URL || "sqlite:torneo_golf.sqlite";
 
 const sequelize = new Sequelize(url);
 
+// Import la definición de la tabla Parejas  de pareja.js
+const Pareja = require(path.join(__dirname, 'pareja'))(sequelize, Sequelize);
+
+// Import la definición de la tabla Resutado_pareja  de resultado_pareja.js
+const Resultado_pareja = require(path.join(__dirname, 'resultado_pareja'))(sequelize, Sequelize);
+
 // Import la definición de la tabla Jugadores  de jugador.js
 const Jugador = require(path.join(__dirname, 'jugador'))(sequelize, Sequelize);
 
@@ -32,27 +38,16 @@ Jugador.hasMany(Resultado, {
   foreignKey: "golfistaId",
 });
 
+//Relaciones con la tabla Resultado_pareja
 
-/*
-Coleccion.belongsTo(Usuario, {
-  as: "coleccionista",
-  foreignKey: "coleccionistaId",
+Resultado_pareja.belongsTo(Pareja, {
+  as: "pareja_golfista",
+  foreignKey: "pareja_golfistaId",
   onDelete: "CASCADE"
 });
-Usuario.hasMany(Coleccion, {
-  as: "monedasCol",
-  foreignKey: "coleccionistaId",
+Pareja.hasMany(Resultado_pareja, {
+  as: "pareja_partidas",
+  foreignKey: "pareja_golfistaId",
 });
 
-Coleccion.belongsTo(Paises, {
-  as: "pais",
-  foreignKey: "paisId",
-  onDelete: "CASCADE"
-});
-
-Paises.hasMany(Coleccion, {
-    as: "paisCol",
-    foreignKey: "paisId",
-  });
-*/
 module.exports = sequelize;

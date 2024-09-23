@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense para saber los atributos posibles.
-    // Mantenga el puntero para ver las descripciones de los existentes atributos.
-    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -11,16 +8,20 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "pwa-node"
+            "type": "node"
         },
-
-
-
         {
             "type": "pwa-chrome",
             "request": "launch",
             "name": "Open index.ejs",
-            "file": "c:\\Users\\Honorato\\Documents\\GOLF\\APP\\views\\juego\\index.ejs"
+            "file": "c:\\Users\\Honorato\\Documents\\GOLF\\APP_PAREJAS\\views\\juego\\index.ejs"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run Script: start",
+            "request": "launch",
+            "command": "npm run start",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

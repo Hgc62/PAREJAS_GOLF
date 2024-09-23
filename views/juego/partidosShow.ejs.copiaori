@@ -10,6 +10,45 @@
             <th>FECHA</th>
             <th>JUGADOR</th>
             <th>CAMPO</th>
+            <th>G1</th>
+            <th>G2</th>
+            <th>G3</th>
+            <th>G4</th>
+            <th>G5</th>
+            <th>G6</th>
+            <th>G7</th>
+            <th>G8</th>
+            <th>G9</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (var i in partidos) { %>
+            <tr>
+                <td><%= partidos[i].partido %></td>
+                <td><%= partidos[i].fecha %></td>
+                <td><%= partidos[i].golfista.jugador %></td>
+                <td><%= partidos[i].campo %></td>
+                <td><%= partidos[i].g1 %></td>
+                <td><%= partidos[i].g2 %></td>
+                <td><%= partidos[i].g3 %></td>
+                <td><%= partidos[i].g4 %></td>
+                <td><%= partidos[i].g5 %></td>
+                <td><%= partidos[i].g6 %></td>
+                <td><%= partidos[i].g7 %></td>
+                <td><%= partidos[i].g8 %></td>
+                <td><%= partidos[i].g9 %></td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+<br>
+<table id="usersIndex">
+    <thead>
+        <tr>
+            <th>PARTIDO</th>
+            <th>FECHA</th>
+            <th>JUGADOR</th>
+            <th>CAMPO</th>
             <th>PUNTUACION</th>
             <th>G1</th>
             <th>G2</th>

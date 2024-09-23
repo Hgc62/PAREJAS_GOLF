@@ -5,9 +5,9 @@ const {Model} = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
 
-    class Resultado extends Model {}
+    class Resultado_pareja extends Model {}
 
-    Resultado.init(
+    Resultado_pareja.init(
         { 
           partido:{
             type: DataTypes.INTEGER, 
@@ -26,13 +26,6 @@ module.exports = (sequelize, DataTypes) => {
           campo:{
             type: DataTypes.STRING,
             allowNull: false,
-          },
-          handicap: {
-            type: DataTypes.INTEGER, 
-            allowNull: false,
-            validate: {
-              isInt: true,
-            }
           },
           g1: {
             type: DataTypes.INTEGER, 
@@ -97,23 +90,16 @@ module.exports = (sequelize, DataTypes) => {
               isInt: true,
             }
           },
-          stableford: {
+          puntuacion: {
             type: DataTypes.INTEGER, 
             allowNull: false,
             validate: {
               isInt: true,
             }
           },
-          handicap_nuevo: {
-            type: DataTypes.INTEGER, 
-            allowNull: false,
-            validate: {
-              isInt: true,
-            }
-          }
         },
-        {sequelize, tableName:"Resultado"}
+        {sequelize, tableName:"Resultado_pareja"}
     );
 
-    return Resultado;
+    return Resultado_pareja;
 };
